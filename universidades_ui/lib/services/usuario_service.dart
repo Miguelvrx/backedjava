@@ -7,8 +7,10 @@ class UsuarioService {
   Future<void> registrarUsuario(String nombre, String email, String password) async {
     final response = await http.post(
       Uri.parse('$baseUrl/registrar'),
-      headers: {'Content-Type': 'application/json'},
-      body: jsonEncode({
+      headers: <String, String>{
+        'Content-Type': 'application/json; charset=UTF-8',
+      },
+      body: jsonEncode(<String, String>{
         'nombre': nombre,
         'email': email,
         'password': password,
@@ -16,22 +18,25 @@ class UsuarioService {
     );
 
     if (response.statusCode != 200) {
-      throw Exception('Error al registrar el usuario');
+      throw Exception('Error al registrar usuario: ${response.body}');
     }
   }
 
   Future<void> login(String email, String password) async {
-    final response = await http.post(
-      Uri.parse('$baseUrl/login'),
-      headers: {'Content-Type': 'application/x-www-form-urlencoded'},
-      body: {
-        'email': email,
-        'password': password,
-      },
-    );
+  final response = await http.post(
+    Uri.parse('$baseUrl/login'),
+    headers: <String, String>{
+      'Content-Type': 'application/json; charset=UTF-8',
+    },
+    body: jsonEncode(<String, String>{
+      'email': email,
+      'password': password,
+    }),
+  );
 
-    if (response.statusCode != 200) {
-      throw Exception('Error en el login');
-    }
+  if (response.statusCode != 200) {
+    throw Exception('Error al iniciar sesión: ${response.body}');
   }
+}
+
 }

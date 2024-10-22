@@ -24,18 +24,35 @@ public class UsuarioController {
 
     // Endpoint para el login
     @PostMapping("/login")
-    public ResponseEntity<String> login(@RequestParam String email, @RequestParam String password) {
-        try {
-            Usuario usuario = usuarioService.encontrarPorEmail(email)
-                    .orElseThrow(() -> new Exception("Usuario no encontrado"));
+    public ResponseEntity<String> login(@RequestBody LoginRequest loginRequest) {
+        boolean loginExitoso = usuarioService.iniciarSesion(loginRequest.getEmail(), loginRequest.getPassword());
+        if (loginExitoso) {
+            return ResponseEntity.ok("Login exitoso");
+        } else {
+            return ResponseEntity.status(401).body("Credenciales incorrectas");
+        }
+    }
 
-            if (usuarioService.verificarContraseña(password, usuario.getPassword())) {
-                return ResponseEntity.ok("Login exitoso");
-            } else {
-                return ResponseEntity.status(401).body("Contraseña incorrecta");
-            }
-        } catch (Exception e) {
-            return ResponseEntity.status(404).body(e.getMessage());
+    // Clase interna para manejar el objeto de login
+    public static class LoginRequest {
+        private String email;
+        private String password;
+
+        // Getters y Setters
+        public String getEmail() {
+            return email;
+        }
+
+        public void setEmail(String email) {
+            this.email = email;
+        }
+
+        public String getPassword() {
+            return password;
+        }
+
+        public void setPassword(String password) {
+            this.password = password;
         }
     }
 
@@ -45,5 +62,4 @@ public class UsuarioController {
         List<Usuario> usuarios = usuarioService.obtenerTodosLosUsuarios();
         return ResponseEntity.ok(usuarios);
     }
-    
 }
