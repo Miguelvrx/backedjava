@@ -11,7 +11,7 @@ public class CorsConfig {
         return new WebMvcConfigurer() {
             @Override
             public void addCorsMappings(CorsRegistry registry) {
-                registry.addMapping("/api/**").allowedOrigins("http://localhost:3000", "http://192.168.200.8:3000"); // Cambia esto según tu frontend
+                registry.addMapping("/api/**").allowedOrigins("http://localhost:3000", ""); // Cambia esto según tu frontend
             }
         };
     }
